@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                     Int                @id @default(autoincrement())
+  name_product           String             @unique
+  price_product          Int
+  quantity_product_stock Int                @default(0)
+  defective_product      DefectiveProduct[]
+  entrance               Entrance[]
+  exit                   Exit[]
+  devolution             Devolution[]
+
+  @@map("products")
+}
+
+model Entrance {
+  id                Int      @id @default(autoincrement())
+  supplier          String
+  quantity_products Int
+  price_total       Int
+  entrance_date     DateTime @default(now())
+  product           Product  @relation(fields: [id_product], references: [id])
+  id_product        Int
+
+  @@map("entrances")
+}
+
+model Exit {
+  id                Int      @id @default(autoincrement())
+  description       String
+  quantity_products Int
+  exit_date         DateTime @default(now())
+  product           Product  @relation(fields: [id_product], references: [id])
+  id_product        Int
+
+  @@map("exits")
+}
+
+model Devolution {
+  id              Int      @id @default(autoincrement())
+  description     String
+  devolution_date DateTime @default(now())
+  product         Product  @relation(fields: [id_product], references: [id])
+  id_product      Int
+
+  @@map("devolutions")
+}
+
+model DefectiveProduct {
+  id                Int     @id @default(autoincrement())
+  quantity_products Int
+  product           Product @relation(fields: [id_product], references: [id])
+  id_product        Int
+
+  @@map("defective_products")
+}
