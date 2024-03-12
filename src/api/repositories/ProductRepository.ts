@@ -4,7 +4,14 @@ import { EProductResponse, IProduct } from "../interfaces/IProduct";
 
 class ProductRepository implements IProduct {
   public async getAll(): Promise<Product[]> {
-    const products = await prismaClient.product.findMany();
+    const products = await prismaClient.product.findMany({
+      include: {
+        entrance: true,
+        exit: true,
+        defective_product: true,
+        devolution: true,
+      },
+    });
 
     return products;
   }
@@ -13,6 +20,12 @@ class ProductRepository implements IProduct {
     const product = await prismaClient.product.findUnique({
       where: {
         id,
+      },
+      include: {
+        entrance: true,
+        exit: true,
+        defective_product: true,
+        devolution: true,
       },
     });
 
@@ -122,7 +135,13 @@ class ProductRepository implements IProduct {
       return EProductResponse.ProductNotFound;
     }
 
-    return product;
+    const productDeleted = await prismaClient.product.delete({
+      where: {
+        id,
+      },
+    });
+
+    return productDeleted;
   }
 }
 

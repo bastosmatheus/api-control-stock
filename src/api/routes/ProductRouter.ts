@@ -1,8 +1,8 @@
 import { Router } from "express";
 import ProductController from "../controllers/ProductController";
 
-class RouterProduct {
-  public router = Router();
+class ProductRouter {
+  public readonly router = Router();
 
   public routes() {
     this.router.get("/products", ProductController.getAllProducts);
@@ -15,4 +15,4 @@ class RouterProduct {
   }
 }
 
-export default new RouterProduct().routes();
+export default new ProductRouter().routes();
