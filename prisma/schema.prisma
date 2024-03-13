@@ -8,26 +8,26 @@ datasource db {
 }
 
 model Product {
-  id                     Int                @id @default(autoincrement())
-  name_product           String             @unique
+  id                     Int        @id @default(autoincrement())
+  name_product           String     @unique
   price_product          Int
-  quantity_product_stock Int                @default(0)
-  defective_product      DefectiveProduct[]
+  quantity_product_stock Int        @default(0)
   entrance               Entrance[]
   exit                   Exit[]
-  devolution             Devolution[]
 
   @@map("products")
 }
 
 model Entrance {
-  id                Int      @id @default(autoincrement())
+  id                Int                @id @default(autoincrement())
   supplier          String
   quantity_products Int
   price_total       Int
-  entrance_date     DateTime @default(now())
-  product           Product  @relation(fields: [id_product], references: [id])
+  entrance_date     DateTime           @default(now())
+  product           Product            @relation(fields: [id_product], references: [id])
   id_product        Int
+  devolution        Devolution[]
+  defective_product DefectiveProduct[]
 
   @@map("entrances")
 }
@@ -44,20 +44,22 @@ model Exit {
 }
 
 model Devolution {
-  id              Int      @id @default(autoincrement())
-  description     String
-  devolution_date DateTime @default(now())
-  product         Product  @relation(fields: [id_product], references: [id])
-  id_product      Int
+  id                Int      @id @default(autoincrement())
+  description       String
+  quantity_products Int
+  devolution_date   DateTime @default(now())
+  entrance          Entrance @relation(fields: [id_entrance], references: [id])
+  id_entrance       Int
 
   @@map("devolutions")
 }
 
 model DefectiveProduct {
-  id                Int     @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
+  description       String
   quantity_products Int
-  product           Product @relation(fields: [id_product], references: [id])
-  id_product        Int
+  entrance          Entrance @relation(fields: [id_entrance], references: [id])
+  id_entrance       Int
 
   @@map("defective_products")
 }

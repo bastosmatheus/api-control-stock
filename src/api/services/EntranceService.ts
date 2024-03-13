@@ -3,11 +3,11 @@ import { Entrance } from "@prisma/client";
 import { NotFoundError } from "../errors/NotFoundError";
 import { EEntranceResponse } from "../interfaces/IEntrance";
 import { EntranceRepository } from "../repositories/EntranceRepository";
-import { UnprocessableEntity } from "../errors/UnprocessableEntity";
+import { UnprocessableEntityError } from "../errors/UnprocessableEntityError";
 import { Either, failure, success } from "../errors/either";
 
 class EntranceService {
-  public readonly entranceRepository = new EntranceRepository();
+  private readonly entranceRepository = new EntranceRepository();
 
   public async getAll(): Promise<Entrance[]> {
     const entrances = await this.entranceRepository.getAll();
@@ -15,7 +15,9 @@ class EntranceService {
     return entrances;
   }
 
-  public async getById(id: number): Promise<Either<UnprocessableEntity | NotFoundError, Entrance>> {
+  public async getById(
+    id: number
+  ): Promise<Either<UnprocessableEntityError | NotFoundError, Entrance>> {
     const entranceSchema = z.object({
       id: z
         .number({
@@ -27,10 +29,10 @@ class EntranceService {
 
     const entranceValidation = entranceSchema.safeParse({ id });
 
-    if (entranceValidation.success === false) {
+    if (!entranceValidation.success) {
       const entranceError = entranceValidation.error.errors[0];
 
-      return failure(new UnprocessableEntity(entranceError.message));
+      return failure(new UnprocessableEntityError(entranceError.message));
     }
 
     const entrance = await this.entranceRepository.getById(id);
@@ -47,24 +49,24 @@ class EntranceService {
     quantity_products: number,
     price_total: number,
     id_product: number
-  ): Promise<Either<UnprocessableEntity | NotFoundError, Entrance>> {
+  ): Promise<Either<UnprocessableEntityError | NotFoundError, Entrance>> {
     const entranceSchema = z.object({
       supplier: z
         .string({
           required_error: "Informe a fornecedora do produto",
-          invalid_type_error: "O nome da fornecedora é obrigatório",
+          invalid_type_error: "O nome da fornecedora deve ser uma string",
         })
         .min(2, { message: "O nome da fornecedora deve ter pelo menos 2 caracteres" }),
       quantity_products: z
         .number({
-          required_error: "Informe a quantidade de produtos da entrada",
-          invalid_type_error: "A quantidade de produtos é obrigatória",
+          required_error: "Informe a quantidade de produtos do lote (entrada)",
+          invalid_type_error: "A quantidade de produtos deve ser um número",
         })
         .min(1, { message: "A quantidade de produtos não pode ser menor que 1" }),
       price_total: z
         .number({
-          required_error: "Informe o preço total da entrada",
-          invalid_type_error: "O preço total é obrigatória",
+          required_error: "Informe o preço total do lote (entrada)",
+          invalid_type_error: "O preço total deve ser um número",
         })
         .min(0.05, { message: "O preço total da entrada deve ser maior que 0.05" }),
       id_product: z
@@ -85,7 +87,7 @@ class EntranceService {
     if (!entranceValidation.success) {
       const entranceError = entranceValidation.error.errors[0];
 
-      return failure(new UnprocessableEntity(entranceError.message));
+      return failure(new UnprocessableEntityError(entranceError.message));
     }
 
     const entrance = await this.entranceRepository.create(
@@ -108,7 +110,7 @@ class EntranceService {
     quantity_products: number,
     price_total: number,
     id_product: number
-  ): Promise<Either<UnprocessableEntity | NotFoundError, Entrance>> {
+  ): Promise<Either<UnprocessableEntityError | NotFoundError, Entrance>> {
     const entranceSchema = z.object({
       id: z
         .number({
@@ -119,19 +121,19 @@ class EntranceService {
       supplier: z
         .string({
           required_error: "Informe a fornecedora do produto",
-          invalid_type_error: "O nome da fornecedora é obrigatório",
+          invalid_type_error: "O nome da fornecedora deve ser uma string",
         })
         .min(2, { message: "O nome da fornecedora deve ter pelo menos 2 caracteres" }),
       quantity_products: z
         .number({
-          required_error: "Informe a quantidade de produtos da entrada",
-          invalid_type_error: "A quantidade de produtos é obrigatória",
+          required_error: "Informe a quantidade de produtos do lote (entrada)",
+          invalid_type_error: "A quantidade de produtos deve ser um número",
         })
         .min(1, { message: "A quantidade de produtos não pode ser menor que 1" }),
       price_total: z
         .number({
-          required_error: "Informe o preço total da entrada",
-          invalid_type_error: "O preço total é obrigatória",
+          required_error: "Informe o preço total do lote (entrada)",
+          invalid_type_error: "O preço total deve ser um número",
         })
         .min(0.05, { message: "O preço total da entrada deve ser maior que 0.05" }),
       id_product: z
@@ -153,7 +155,7 @@ class EntranceService {
     if (!entranceValidation.success) {
       const entranceError = entranceValidation.error.errors[0];
 
-      return failure(new UnprocessableEntity(entranceError.message));
+      return failure(new UnprocessableEntityError(entranceError.message));
     }
 
     const entrance = await this.entranceRepository.update(
@@ -175,7 +177,9 @@ class EntranceService {
     return success(entrance);
   }
 
-  public async delete(id: number): Promise<Either<UnprocessableEntity, NotFoundError | Entrance>> {
+  public async delete(
+    id: number
+  ): Promise<Either<UnprocessableEntityError, NotFoundError | Entrance>> {
     const entranceSchema = z.object({
       id: z
         .number({
@@ -187,10 +191,10 @@ class EntranceService {
 
     const entranceValidation = entranceSchema.safeParse({ id });
 
-    if (entranceValidation.success === false) {
+    if (!entranceValidation.success) {
       const entranceError = entranceValidation.error.errors[0];
 
-      return failure(new UnprocessableEntity(entranceError.message));
+      return failure(new UnprocessableEntityError(entranceError.message));
     }
 
     const entrance = await this.entranceRepository.delete(id);

@@ -1,4 +1,4 @@
-class UnprocessableEntity extends Error {
+class UnprocessableEntityError extends Error {
   public readonly message: string;
   public readonly type: string;
   public readonly statusCode: number;
@@ -12,4 +12,4 @@ class UnprocessableEntity extends Error {
   }
 }
 
-export { UnprocessableEntity };
+export { UnprocessableEntityError };

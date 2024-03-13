@@ -4,11 +4,11 @@ import { NotFoundError } from "../errors/NotFoundError";
 import { ConflictError } from "../errors/ConflictError";
 import { EProductResponse } from "../interfaces/IProduct";
 import { ProductRepository } from "../repositories/ProductRepository";
-import { UnprocessableEntity } from "../errors/UnprocessableEntity";
+import { UnprocessableEntityError } from "../errors/UnprocessableEntityError";
 import { Either, failure, success } from "../errors/either";
 
 class ProductService {
-  public readonly productRepository = new ProductRepository();
+  private readonly productRepository = new ProductRepository();
 
   public async getAll() {
     const products = await this.productRepository.getAll();
@@ -16,7 +16,9 @@ class ProductService {
     return products;
   }
 
-  public async getById(id: number): Promise<Either<UnprocessableEntity | NotFoundError, Product>> {
+  public async getById(
+    id: number
+  ): Promise<Either<UnprocessableEntityError | NotFoundError, Product>> {
     const productSchema = z.object({
       id: z
         .number({
@@ -28,10 +30,10 @@ class ProductService {
 
     const productValidation = productSchema.safeParse({ id });
 
-    if (productValidation.success === false) {
+    if (!productValidation.success) {
       const productError = productValidation.error.errors[0];
 
-      return failure(new UnprocessableEntity(productError.message));
+      return failure(new UnprocessableEntityError(productError.message));
     }
 
     const product = await this.productRepository.getById(id);
@@ -46,7 +48,7 @@ class ProductService {
   public async create(
     name_product: string,
     price_product: number
-  ): Promise<Either<UnprocessableEntity | ConflictError, Product>> {
+  ): Promise<Either<UnprocessableEntityError | ConflictError, Product>> {
     const productSchema = z.object({
       name_product: z
         .string({
@@ -67,7 +69,7 @@ class ProductService {
     if (!productValidation.success) {
       const productError = productValidation.error.errors[0];
 
-      return failure(new UnprocessableEntity(productError.message));
+      return failure(new UnprocessableEntityError(productError.message));
     }
 
     const product = await this.productRepository.create(name_product, price_product);
@@ -110,7 +112,7 @@ class ProductService {
     if (!productValidation.success) {
       const productError = productValidation.error.issues[0];
 
-      return failure(new UnprocessableEntity(productError.message));
+      return failure(new UnprocessableEntityError(productError.message));
     }
 
     const product = await this.productRepository.update(id, name_product, price_product);
@@ -120,13 +122,15 @@ class ProductService {
     }
 
     if (product === EProductResponse.ProductNotFound) {
-      return failure(new ConflictError("Nenhum produto foi encontrado com o ID: " + id));
+      return failure(new NotFoundError("Nenhum produto foi encontrado com o ID: " + id));
     }
 
     return success(product);
   }
 
-  public async delete(id: number): Promise<Either<UnprocessableEntity | NotFoundError, Product>> {
+  public async delete(
+    id: number
+  ): Promise<Either<UnprocessableEntityError | NotFoundError, Product>> {
     const productSchema = z.object({
       id: z
         .number({
@@ -138,16 +142,16 @@ class ProductService {
 
     const productValidation = productSchema.safeParse({ id });
 
-    if (productValidation.success === false) {
+    if (!productValidation.success) {
       const productError = productValidation.error.errors[0];
 
-      return failure(new UnprocessableEntity(productError.message));
+      return failure(new UnprocessableEntityError(productError.message));
     }
 
     const product = await this.productRepository.delete(id);
 
     if (product === EProductResponse.ProductNotFound) {
-      return failure(new ConflictError("Nenhum produto foi encontrado com o ID: " + id));
+      return failure(new NotFoundError("Nenhum produto foi encontrado com o ID: " + id));
     }
 
     return success(product);
