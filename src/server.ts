@@ -5,7 +5,7 @@ import ExitRouter from "./api/routes/ExitRouter";
 import ProductRouter from "./api/routes/ProductRouter";
 import EntranceRouter from "./api/routes/EntranceRouter";
 import DevolutionRouter from "./api/routes/DevolutionRouter";
-import DefectProductRouter from "./api/routes/DefectProductRouter";
+import DefectiveProductRouter from "./api/routes/DefectiveProductRouter";
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(ProductRouter);
 app.use(EntranceRouter);
 app.use(ExitRouter);
 app.use(DevolutionRouter);
-app.use(DefectProductRouter);
+app.use(DefectiveProductRouter);
 
 app.listen(4000, () => {
   console.log("server rodando na porta 4000");

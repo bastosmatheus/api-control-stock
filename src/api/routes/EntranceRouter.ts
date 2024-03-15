@@ -8,8 +8,8 @@ class EntranceRouter {
     this.router.get("/entrances", EntranceController.getAllEntrances);
     this.router.get("/entrances/:id", EntranceController.getEntranceById);
     this.router.post("/entrances", EntranceController.createEntrance);
-    this.router.get("/entrances/:id", EntranceController.updateEntrance);
-    this.router.get("/entrances/:id", EntranceController.deleteEntrance);
+    this.router.put("/entrances/:id", EntranceController.updateEntrance);
+    this.router.delete("/entrances/:id", EntranceController.deleteEntrance);
 
     return this.router;
   }

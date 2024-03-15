@@ -4,7 +4,11 @@ import { EExitResponse, IExit } from "../interfaces/IExit";
 
 class ExitRepository implements IExit {
   public async getAll(): Promise<Exit[]> {
-    const exits = await prismaClient.exit.findMany();
+    const exits = await prismaClient.exit.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
 
     return exits;
   }
@@ -26,6 +30,7 @@ class ExitRepository implements IExit {
   public async create(
     description: string,
     quantity_products: number,
+    price_total: number,
     id_product: number
   ): Promise<EExitResponse.ProductNotFound | EExitResponse.NoStock | Exit> {
     const product = await prismaClient.product.findUnique({
@@ -46,6 +51,7 @@ class ExitRepository implements IExit {
       data: {
         description,
         quantity_products,
+        price_total,
         id_product,
       },
     });
@@ -57,6 +63,7 @@ class ExitRepository implements IExit {
     id: number,
     description: string,
     quantity_products: number,
+    price_total: number,
     id_product: number
   ): Promise<
     EExitResponse.ExitNotFound | EExitResponse.ProductNotFound | EExitResponse.NoStock | Exit
@@ -89,6 +96,7 @@ class ExitRepository implements IExit {
       data: {
         description,
         quantity_products,
+        price_total,
         id_product,
       },
       where: {
@@ -110,7 +118,13 @@ class ExitRepository implements IExit {
       return EExitResponse.ExitNotFound;
     }
 
-    return exit;
+    const exitDeleted = await prismaClient.exit.delete({
+      where: {
+        id,
+      },
+    });
+
+    return exitDeleted;
   }
 }
 

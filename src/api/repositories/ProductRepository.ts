@@ -5,12 +5,41 @@ import { EProductResponse, IProduct } from "../interfaces/IProduct";
 class ProductRepository implements IProduct {
   public async getAll(): Promise<Product[]> {
     const products = await prismaClient.product.findMany({
+      orderBy: {
+        id: "asc",
+      },
       include: {
         entrance: true,
         exit: true,
-        defective_product: true,
-        devolution: true,
       },
+    });
+
+    const updatingQuantityProductsStock = await products.filter(async (product) => {
+      const quantity_products_entrances = product.entrance.reduce(
+        (accumulator, entrance) => entrance.quantity_products + accumulator,
+        0
+      );
+
+      const quantity_products_exits = product.exit.reduce(
+        (accumulator, exit) => exit.quantity_products + accumulator,
+        0
+      );
+
+      const quantity_product_stock =
+        quantity_products_entrances !== 0
+          ? quantity_products_entrances - quantity_products_exits
+          : 0;
+
+      product.quantity_product_stock = quantity_product_stock;
+
+      await prismaClient.product.update({
+        data: {
+          quantity_product_stock: product.quantity_product_stock,
+        },
+        where: {
+          id: product.id,
+        },
+      });
     });
 
     return products;
@@ -24,8 +53,6 @@ class ProductRepository implements IProduct {
       include: {
         entrance: true,
         exit: true,
-        defective_product: true,
-        devolution: true,
       },
     });
 
@@ -33,7 +60,33 @@ class ProductRepository implements IProduct {
       return EProductResponse.ProductNotFound;
     }
 
-    return product;
+    const quantity_products_entrances = product.entrance.reduce(
+      (accumulator, entrance) => entrance.quantity_products + accumulator,
+      0
+    );
+
+    const quantity_products_exits = product.exit.reduce(
+      (accumulator, exit) => exit.quantity_products + accumulator,
+      0
+    );
+
+    const quantity_product_stock =
+      quantity_products_entrances !== 0 ? quantity_products_entrances - quantity_products_exits : 0;
+
+    const stockUpdated = await prismaClient.product.update({
+      data: {
+        quantity_product_stock,
+      },
+      where: {
+        id: id,
+      },
+      include: {
+        entrance: true,
+        exit: true,
+      },
+    });
+
+    return stockUpdated;
   }
 
   public async create(
@@ -97,32 +150,6 @@ class ProductRepository implements IProduct {
 
     return productUpdated;
   }
-
-  // public async updateStock(
-  //   id: number,
-  //   quantity_product_stock: number
-  // ): Promise<Product | EProductResponse.ProductNotFound> {
-  //   const user = await prismaClient.product.findUnique({
-  //     where: {
-  //       id,
-  //     },
-  //   });
-
-  //   if (user === null) {
-  //     return EProductResponse.ProductNotFound;
-  //   }
-
-  //   const userUpdated = await prismaClient.product.update({
-  //     where: {
-  //       id,
-  //     },
-  //     data: {
-  //       quantity_product_stock,
-  //     },
-  //   });
-
-  //   return userUpdated;
-  // }
 
   public async delete(id: number): Promise<Product | EProductResponse.ProductNotFound> {
     const product = await prismaClient.product.findUnique({

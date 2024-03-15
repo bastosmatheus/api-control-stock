@@ -12,12 +12,14 @@ interface IExit {
   create(
     description: string,
     quantity_products: number,
+    price_total: number,
     id_product: number
   ): Promise<EExitResponse.ProductNotFound | EExitResponse.NoStock | Exit>;
   update(
     id: number,
     description: string,
     quantity_products: number,
+    price_total: number,
     id_product: number
   ): Promise<
     EExitResponse.ExitNotFound | EExitResponse.ProductNotFound | EExitResponse.NoStock | Exit

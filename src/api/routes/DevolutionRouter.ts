@@ -8,8 +8,8 @@ class DevolutionRouter {
     this.router.get("/devolutions", DevolutionController.getAllDevolutions);
     this.router.get("/devolutions/:id", DevolutionController.getDevolutionById);
     this.router.post("/devolutions", DevolutionController.createDevolution);
-    this.router.get("/devolutions/:id", DevolutionController.updateDevolution);
-    this.router.get("/devolutions/:id", DevolutionController.deleteDevolution);
+    this.router.put("/devolutions/:id", DevolutionController.updateDevolution);
+    this.router.delete("/devolutions/:id", DevolutionController.deleteDevolution);
 
     return this.router;
   }

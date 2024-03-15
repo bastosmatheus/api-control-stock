@@ -10,7 +10,7 @@ datasource db {
 model Product {
   id                     Int        @id @default(autoincrement())
   name_product           String     @unique
-  price_product          Int
+  price_product          Float
   quantity_product_stock Int        @default(0)
   entrance               Entrance[]
   exit                   Exit[]
@@ -22,8 +22,8 @@ model Entrance {
   id                Int                @id @default(autoincrement())
   supplier          String
   quantity_products Int
-  price_total       Int
-  entrance_date     DateTime           @default(now())
+  price_total       Float
+  entrance_date     DateTime           @default(now()) @db.Date
   product           Product            @relation(fields: [id_product], references: [id])
   id_product        Int
   devolution        Devolution[]
@@ -36,7 +36,8 @@ model Exit {
   id                Int      @id @default(autoincrement())
   description       String
   quantity_products Int
-  exit_date         DateTime @default(now())
+  price_total       Float
+  exit_date         DateTime @default(now()) @db.Date
   product           Product  @relation(fields: [id_product], references: [id])
   id_product        Int
 
@@ -47,7 +48,7 @@ model Devolution {
   id                Int      @id @default(autoincrement())
   description       String
   quantity_products Int
-  devolution_date   DateTime @default(now())
+  devolution_date   DateTime @default(now()) @db.Date
   entrance          Entrance @relation(fields: [id_entrance], references: [id])
   id_entrance       Int
 

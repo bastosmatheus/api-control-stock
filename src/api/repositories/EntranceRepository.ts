@@ -5,9 +5,12 @@ import { EEntranceResponse, IEntrance } from "../interfaces/IEntrance";
 class EntranceRepository implements IEntrance {
   public async getAll(): Promise<Entrance[]> {
     const entrances = await prismaClient.entrance.findMany({
+      orderBy: {
+        id: "asc",
+      },
       include: {
-        DefectiveProduct: true,
-        Devolution: true,
+        defective_product: true,
+        devolution: true,
       },
     });
 
@@ -20,8 +23,8 @@ class EntranceRepository implements IEntrance {
         id,
       },
       include: {
-        DefectiveProduct: true,
-        Devolution: true,
+        defective_product: true,
+        devolution: true,
       },
     });
 

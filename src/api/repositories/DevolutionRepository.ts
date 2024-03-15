@@ -4,7 +4,11 @@ import { EDevolutionResponse, IDevolution } from "../interfaces/IDevolution";
 
 class DevolutionRepository implements IDevolution {
   public async getAll(): Promise<Devolution[]> {
-    const devolutions = await prismaClient.devolution.findMany();
+    const devolutions = await prismaClient.devolution.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
 
     return devolutions;
   }
@@ -102,7 +106,13 @@ class DevolutionRepository implements IDevolution {
       return EDevolutionResponse.DevolutionNotFound;
     }
 
-    return devolution;
+    const devolutionDeleted = await prismaClient.devolution.delete({
+      where: {
+        id,
+      },
+    });
+
+    return devolutionDeleted;
   }
 }
 

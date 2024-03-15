@@ -50,6 +50,7 @@ class ExitService {
   public async create(
     description: string,
     quantity_products: number,
+    price_total: number,
     id_product: number
   ): Promise<Either<UnprocessableEntityError | NotFoundError | ConflictError, Exit>> {
     const exitSchema = z.object({
@@ -81,7 +82,12 @@ class ExitService {
       return failure(new UnprocessableEntityError(exitError.message));
     }
 
-    const exit = await this.exitRepository.create(description, quantity_products, id_product);
+    const exit = await this.exitRepository.create(
+      description,
+      quantity_products,
+      price_total,
+      id_product
+    );
 
     if (exit === EExitResponse.ProductNotFound) {
       return failure(new NotFoundError("Nenhum produto foi encontrado com o ID: " + id_product));
@@ -102,6 +108,7 @@ class ExitService {
     id: number,
     description: string,
     quantity_products: number,
+    price_total: number,
     id_product: number
   ): Promise<Either<UnprocessableEntityError | NotFoundError | ConflictError, Exit>> {
     const exitSchema = z.object({
@@ -139,7 +146,13 @@ class ExitService {
       return failure(new UnprocessableEntityError(exitError.message));
     }
 
-    const exit = await this.exitRepository.update(id, description, quantity_products, id_product);
+    const exit = await this.exitRepository.update(
+      id,
+      description,
+      quantity_products,
+      price_total,
+      id_product
+    );
 
     if (exit === EExitResponse.ExitNotFound) {
       return failure(new NotFoundError("Nenhuma saída foi encontrada com o ID: " + id));

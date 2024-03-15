@@ -1,10 +1,14 @@
-import { prismaClient } from "../database/prismaClient";
 import { DefectiveProduct } from "@prisma/client";
+import { prismaClient } from "../database/prismaClient";
 import { EDefectiveProductResponse, IDefectiveProduct } from "../interfaces/IDefectiveProduct";
 
 class DefectiveProductRepository implements IDefectiveProduct {
   public async getAll(): Promise<DefectiveProduct[]> {
-    const defectiveProducts = await prismaClient.defectiveProduct.findMany();
+    const defectiveProducts = await prismaClient.defectiveProduct.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
 
     return defectiveProducts;
   }
@@ -108,7 +112,13 @@ class DefectiveProductRepository implements IDefectiveProduct {
       return EDefectiveProductResponse.DefectiveProductNotFound;
     }
 
-    return defectiveProduct;
+    const defectiveProductDeleted = await prismaClient.defectiveProduct.delete({
+      where: {
+        id,
+      },
+    });
+
+    return defectiveProductDeleted;
   }
 }
 

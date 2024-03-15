@@ -29,11 +29,11 @@ class ExitController {
   }
 
   public async createExit(req: Request, res: Response) {
-    const { description, quantity_products, id_product } = req.body;
+    const { description, quantity_products, price_total, id_product } = req.body;
 
     const exitService = new ExitService();
 
-    const exit = await exitService.create(description, quantity_products, id_product);
+    const exit = await exitService.create(description, quantity_products, price_total, id_product);
 
     if (exit.isFailure()) {
       return res.status(exit.value.statusCode).json(exit.value);
@@ -50,11 +50,17 @@ class ExitController {
   public async updateExit(req: Request, res: Response) {
     const { id } = req.params;
 
-    const { description, quantity_products, id_product } = req.body;
+    const { description, quantity_products, price_total, id_product } = req.body;
 
     const exitService = new ExitService();
 
-    const exit = await exitService.update(Number(id), description, quantity_products, id_product);
+    const exit = await exitService.update(
+      Number(id),
+      description,
+      quantity_products,
+      price_total,
+      id_product
+    );
 
     if (exit.isFailure()) {
       return res.status(exit.value.statusCode).json(exit.value);
