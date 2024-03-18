@@ -70,7 +70,7 @@ $ npm run start
 | <kbd>POST /exits</kbd>                  | informa uma saída de um produto, veja mais na [resposta da requisição](#post-exits)                                                               |
 | <kbd>POST /devolutions</kbd>            | registra detalhes da devolução de um produto, veja [detalhes da requisição](#post-devolutions)                                                    |
 | <kbd>POST /defectiveproducts</kbd>      | registra detalhes de um produto defeituoso, veja mais na [resposta da requisição](#post-defectiveproducts)                                        |
-| <kbd>GET /products</kbd>                | retorna todos os produtos registrado na API, veja [detalhes da requisição](#get-products)                                                         |
+| <kbd>GET /products/:id</kbd>            | retorna todos os produtos registrado na API, veja [detalhes da requisição](#get-products)                                                         |
 | <kbd>RESPOSTAS COM ERROS</kbd>          |
 | <kbd>GET /products/:idInexistente</kbd> | erro ao passar um id inexistente para o get, veja mais na [resposta da requisição](#get-products-error)                                           |
 | <kbd>POST /products</kbd>               | falha ao tentar registrar um produto que já existe no banco de dados, veja mais na [resposta da requisição](#post-products-error)                 |
