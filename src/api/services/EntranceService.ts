@@ -171,7 +171,7 @@ class EntranceService {
     }
 
     if (entrance === EEntranceResponse.ProductNotFound) {
-      return failure(new NotFoundError("Nenhum produto foi encontrado com o ID: " + id));
+      return failure(new NotFoundError("Nenhum produto foi encontrado com o ID: " + id_product));
     }
 
     return success(entrance);
