@@ -9,7 +9,12 @@ class ProductRepository implements IProduct {
         id: "asc",
       },
       include: {
-        entrance: true,
+        entrance: {
+          include: {
+            defective_product: true,
+            devolution: true,
+          },
+        },
         exit: true,
       },
     });
@@ -81,7 +86,12 @@ class ProductRepository implements IProduct {
         id: id,
       },
       include: {
-        entrance: true,
+        entrance: {
+          include: {
+            defective_product: true,
+            devolution: true,
+          },
+        },
         exit: true,
       },
     });
