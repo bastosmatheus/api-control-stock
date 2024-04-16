@@ -29,11 +29,22 @@ class ProductController {
   }
 
   public async createProduct(req: Request, res: Response) {
-    const { name_product, price_product } = req.body;
+    const { name_product, price_product, id_store } = req.body;
+    const bearerToken = req.headers.authorization;
+
+    if (!bearerToken) {
+      return res.status(400).json({
+        message: "Informe o token de autorização",
+        type: "Bad Request",
+        statusCode: 400,
+      });
+    }
+
+    const token = bearerToken.split(" ")[1];
 
     const productService = new ProductService();
 
-    const product = await productService.create(name_product, price_product);
+    const product = await productService.create(name_product, price_product, id_store, token);
 
     if (product.isFailure()) {
       return res.status(product.value.statusCode).json(product.value);
@@ -49,12 +60,14 @@ class ProductController {
 
   public async updateProduct(req: Request, res: Response) {
     const { id } = req.params;
-
     const { name_product, price_product } = req.body;
+    const bearerToken = req.headers.authorization;
+
+    const token = bearerToken.split(" ")[1];
 
     const productService = new ProductService();
 
-    const product = await productService.update(Number(id), name_product, price_product);
+    const product = await productService.update(Number(id), name_product, price_product, token);
 
     if (product.isFailure()) {
       return res.status(product.value.statusCode).json(product.value);
@@ -70,10 +83,13 @@ class ProductController {
 
   public async deleteProduct(req: Request, res: Response) {
     const { id } = req.params;
+    const bearerToken = req.headers.authorization;
+
+    const token = bearerToken.split(" ")[1];
 
     const productService = new ProductService();
 
-    const product = await productService.delete(Number(id));
+    const product = await productService.delete(Number(id), token);
 
     if (product.isFailure()) {
       return res.status(product.value.statusCode).json(product.value);

@@ -12,6 +12,8 @@ model Product {
   name_product           String     @unique
   price_product          Float
   quantity_product_stock Int        @default(0)
+  store                  Store      @relation(fields: [id_store], references: [id])
+  id_store               Int
   entrance               Entrance[]
   exit                   Exit[]
 
@@ -63,4 +65,14 @@ model DefectiveProduct {
   id_entrance       Int
 
   @@map("defective_products")
+}
+
+model Store {
+  id         Int       @id @default(autoincrement())
+  name_store String    @unique
+  email      String    @unique
+  password   String
+  product    Product[]
+
+  @@map("stores")
 }

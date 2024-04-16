@@ -3,6 +3,7 @@ import { Product } from "@prisma/client";
 enum EProductResponse {
   ProductNotFound,
   ProductExists,
+  StoreNotFound,
 }
 
 interface IProduct {
@@ -10,8 +11,9 @@ interface IProduct {
   getById(id: number): Promise<Product | EProductResponse.ProductNotFound>;
   create(
     name_product: string,
-    price_product: number
-  ): Promise<Product | EProductResponse.ProductExists>;
+    price_product: number,
+    id_store: number
+  ): Promise<Product | EProductResponse.ProductExists | EProductResponse.StoreNotFound>;
   update(
     id: number,
     name_product: string,

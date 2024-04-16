@@ -101,8 +101,19 @@ class ProductRepository implements IProduct {
 
   public async create(
     name_product: string,
-    price_product: number
-  ): Promise<Product | EProductResponse.ProductExists> {
+    price_product: number,
+    id_store: number
+  ): Promise<Product | EProductResponse.ProductExists | EProductResponse.StoreNotFound> {
+    const storeExists = await prismaClient.store.findUnique({
+      where: {
+        id: id_store,
+      },
+    });
+
+    if (!storeExists) {
+      return EProductResponse.StoreNotFound;
+    }
+
     const productExists = await prismaClient.product.findUnique({
       where: {
         name_product,
@@ -117,6 +128,7 @@ class ProductRepository implements IProduct {
       data: {
         name_product,
         price_product,
+        id_store,
       },
     });
 
