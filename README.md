@@ -1,6 +1,6 @@
 # Api para controle de estoque/entrada e saída de produtos
 
-Uma api que tem como objetivo automatizar uma tarefa super repetitiva, a saída e entrada dos produtos de uma loja. Além disso, fornece também o recurso de controle de estoque, que é calculado a partir do momento que uma entrada é registrada para tal produto.
+Uma api que tem como objetivo automatizar uma tarefa super repetitiva, a saída e entrada dos produtos de uma loja. Além disso, fornece também o recurso de controle de estoque, que é calculado a partir do momento que uma entrada é registrada para tal produto. A criação da API é feita com o Express, utilizando o ORM Prisma para efetuar as queries no PostgreSQL. Todos os dados são validados com a biblioteca Zod, as senhas registradas são criptografadas com bcrypt, e além disso, o token JWT é utilizado para autenticação.
 
 <h2>Tópicos 📍</h2>
 
@@ -24,6 +24,7 @@ Uma api que tem como objetivo automatizar uma tarefa super repetitiva, a saída 
 - [Prisma](https://www.prisma.io/)
 - [Zod](https://zod.dev/)
 - [JWT](https://jwt.io/)
+- [BCrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
 
 <h2 id="project">Como rodar esse projeto? 💿</h2>
 
