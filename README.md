@@ -4,16 +4,16 @@ Uma api que tem como objetivo automatizar uma tarefa super repetitiva, a saída 
 
 <h2>Tópicos 📍</h2>
 
-- <a href="#ajustes">Ajustes e melhorias</a>
+- <a href="#melhorias">Ajustes e melhorias</a>
 - <a href="#techs">Tecnologias utilizadas</a>
 - <a href="#project">Como rodar esse projeto?</a>
 - <a href="#api">Principais endpoints da API</a>
 
-<h2 id="ajustes">Ajustes e melhorias 🧰</h2>
+<h2 id="melhorias">Melhorias feitas 🧰</h2>
 
-- Criação de usuários/lojas no sistema
+- Criação de lojas no sistema
 - Autenticação com JWT
-- Linkagem dos produtos com um(a) único(a) usuário/loja
+- Linkagem dos produtos com uma única loja
 
 <h2 id="techs">Tecnologias Utilizadas 🖥️</h2>
 
@@ -23,6 +23,7 @@ Uma api que tem como objetivo automatizar uma tarefa super repetitiva, a saída 
 - [Express](https://www.expressjs.com/pt-br/)
 - [Prisma](https://www.prisma.io/)
 - [Zod](https://zod.dev/)
+- [JWT](https://jwt.io/)
 
 <h2 id="project">Como rodar esse projeto? 💿</h2>
 
@@ -70,7 +71,8 @@ $ npm run start
 | <kbd>POST /exits</kbd>                  | informa uma saída de um produto, veja mais na [resposta da requisição](#post-exits)                                                               |
 | <kbd>POST /devolutions</kbd>            | registra detalhes da devolução de um produto, veja [detalhes da requisição](#post-devolutions)                                                    |
 | <kbd>POST /defectiveproducts</kbd>      | registra detalhes de um produto defeituoso, veja mais na [resposta da requisição](#post-defectiveproducts)                                        |
-| <kbd>GET /products/:id</kbd>            | retorna todos os produtos registrado na API, veja [detalhes da requisição](#get-products)                                                         |
+| <kbd>POST /stores</kbd>                 | cria uma loja, veja [detalhes da requisição](#post-stores)                                                                                        |
+| <kbd>GET /products/:id</kbd>            | retorna todos os produtos registrado na API, veja [resposta da requisição](#get-products)                                                         |
 | <kbd>RESPOSTAS COM ERROS</kbd>          |
 | <kbd>GET /products/:idInexistente</kbd> | erro ao passar um id inexistente para o get, veja mais na [resposta da requisição](#get-products-error)                                           |
 | <kbd>POST /products</kbd>               | falha ao tentar registrar um produto que já existe no banco de dados, veja mais na [resposta da requisição](#post-products-error)                 |
@@ -82,12 +84,15 @@ $ npm run start
 
 <h3 id="#post-products">POST /products</h3>
 
+Ao criar uma loja (store), o usuário recebe um token de autenticação JWT, que é necessário para fazer as requisições de criação, atualização e deleção de produtos (products).
+
 **REQUISIÇÃO**
 
 ```json
 {
   "name_product": "Barra de cereal",
-  "price_product": 2.4
+  "price_product": 2.4,
+  "id_store": 1
 }
 ```
 
@@ -102,7 +107,8 @@ $ npm run start
     "id": 3,
     "name_product": "Barra de cereal",
     "price_product": 2.4,
-    "quantity_product_stock": 0
+    "quantity_product_stock": 0,
+    "id_store": 1
   }
 }
 ```
@@ -226,6 +232,35 @@ $ npm run start
 }
 ```
 
+<h3 id="#post-stores">POST /stores</h3>
+
+**REQUISIÇÃO**
+
+```json
+{
+  "name_store": "mtCompany",
+  "email": "mthscompany@gmail.com",
+  "password": "102030"
+}
+```
+
+**RESPOSTA**
+
+```json
+{
+  "message": "Loja criada com sucesso",
+  "type": "Created",
+  "statusCode": 201,
+  "storeCreated": {
+    "id": 5,
+    "name_store": "mtCompany",
+    "email": "mthscompany@gmail.com",
+    "password": "$2b$10$l/YKKyezrYU/18RjG7cxlOjl1HWaLH/neDz4.hFmJhQAYEBofcI/2",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lX3N0b3JlIjoibXRDb21wYW55IiwiaWQiOjUsImlhdCI6MTcxMzM5MDkwNCwiZXhwIjoxNzE1OTgyOTA0fQ.1K7qHrdMuJdlZ3xSpYbsN2ub9s-DCZ6wg-hMUVFX8l8"
+  }
+}
+```
+
 <h3 id="#get-products">GET /products/:id</h3>
 
 **RESPOSTA**
@@ -239,6 +274,7 @@ $ npm run start
     "name_product": "Barra de ceral",
     "price_product": 2.4,
     "quantity_product_stock": 280,
+    "id_store": 1,
     "entrance": [
       {
         "id": 17,
@@ -303,7 +339,8 @@ Além dessas respostas de sucesso, a API também conta com algumas respostas inf
 ```json
 {
   "name_product": "Barra de cereal",
-  "price_product": 2.4
+  "price_product": 2.4,
+  "id_store": 1
 }
 ```
 
