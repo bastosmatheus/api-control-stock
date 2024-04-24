@@ -4,6 +4,7 @@ enum EStoreResponse {
   StoreNotFound,
   NameStoreExists,
   EmailExists,
+  NotAuthorized,
 }
 
 interface IStore {
@@ -17,9 +18,18 @@ interface IStore {
   update(
     id: number,
     name_store: string,
-    password: string
-  ): Promise<Store | EStoreResponse.StoreNotFound | EStoreResponse.NameStoreExists>;
-  delete(id: number): Promise<Store | EStoreResponse.StoreNotFound>;
+    id_store_token: number
+  ): Promise<
+    | Store
+    | EStoreResponse.StoreNotFound
+    | EStoreResponse.NameStoreExists
+    | EStoreResponse.NotAuthorized
+  >;
+  delete(
+    id: number,
+    id_store_token: number
+  ): Promise<Store | EStoreResponse.StoreNotFound | EStoreResponse.NotAuthorized>;
+  login(email: string): Promise<Store | EStoreResponse.StoreNotFound>;
 }
 
 export { IStore, EStoreResponse };

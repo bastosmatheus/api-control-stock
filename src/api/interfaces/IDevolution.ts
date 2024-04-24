@@ -3,6 +3,7 @@ import { Devolution } from "@prisma/client";
 enum EDevolutionResponse {
   DevolutionNotFound,
   EntranceNotFound,
+  NotAuthorized,
 }
 
 interface IDevolution {
@@ -11,17 +12,27 @@ interface IDevolution {
   create(
     description: string,
     quantity_products: number,
-    id_entrance: number
-  ): Promise<EDevolutionResponse.EntranceNotFound | Devolution>;
+    id_entrance: number,
+    id_store_token: number
+  ): Promise<EDevolutionResponse.EntranceNotFound | EDevolutionResponse.NotAuthorized | Devolution>;
   update(
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number
+    id_entrance: number,
+    id_store_token: number
   ): Promise<
-    EDevolutionResponse.DevolutionNotFound | EDevolutionResponse.EntranceNotFound | Devolution
+    | EDevolutionResponse.DevolutionNotFound
+    | EDevolutionResponse.NotAuthorized
+    | EDevolutionResponse.EntranceNotFound
+    | Devolution
   >;
-  delete(id: number): Promise<EDevolutionResponse.DevolutionNotFound | Devolution>;
+  delete(
+    id: number,
+    id_store_token: number
+  ): Promise<
+    EDevolutionResponse.DevolutionNotFound | EDevolutionResponse.NotAuthorized | Devolution
+  >;
 }
 
 export { IDevolution, EDevolutionResponse };

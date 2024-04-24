@@ -102,8 +102,18 @@ class ProductRepository implements IProduct {
   public async create(
     name_product: string,
     price_product: number,
-    id_store: number
-  ): Promise<Product | EProductResponse.ProductExists | EProductResponse.StoreNotFound> {
+    id_store: number,
+    id_store_token: number
+  ): Promise<
+    | Product
+    | EProductResponse.ProductExists
+    | EProductResponse.StoreNotFound
+    | EProductResponse.NotAuthorized
+  > {
+    if (id_store !== id_store_token) {
+      return EProductResponse.NotAuthorized;
+    }
+
     const storeExists = await prismaClient.store.findUnique({
       where: {
         id: id_store,
@@ -138,8 +148,14 @@ class ProductRepository implements IProduct {
   public async update(
     id: number,
     name_product: string,
-    price_product: number
-  ): Promise<Product | EProductResponse.ProductExists | EProductResponse.ProductNotFound> {
+    price_product: number,
+    id_store_token: number
+  ): Promise<
+    | Product
+    | EProductResponse.ProductExists
+    | EProductResponse.ProductNotFound
+    | EProductResponse.NotAuthorized
+  > {
     const product = await prismaClient.product.findUnique({
       where: {
         id,
@@ -148,6 +164,10 @@ class ProductRepository implements IProduct {
 
     if (product === null) {
       return EProductResponse.ProductNotFound;
+    }
+
+    if (product.id_store !== id_store_token) {
+      return EProductResponse.NotAuthorized;
     }
 
     const productExists = await prismaClient.product.findUnique({
@@ -173,7 +193,10 @@ class ProductRepository implements IProduct {
     return productUpdated;
   }
 
-  public async delete(id: number): Promise<Product | EProductResponse.ProductNotFound> {
+  public async delete(
+    id: number,
+    id_store_token: number
+  ): Promise<Product | EProductResponse.ProductNotFound | EProductResponse.NotAuthorized> {
     const product = await prismaClient.product.findUnique({
       where: {
         id,
@@ -182,6 +205,10 @@ class ProductRepository implements IProduct {
 
     if (product === null) {
       return EProductResponse.ProductNotFound;
+    }
+
+    if (product.id_store !== id_store_token) {
+      return EProductResponse.NotAuthorized;
     }
 
     const productDeleted = await prismaClient.product.delete({

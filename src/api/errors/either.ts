@@ -40,4 +40,4 @@ function success<F, S>(value: S): Success<F, S> {
 
 type Either<F, S> = Failure<F, S> | Success<F, S>;
 
-export { failure, success, Either };
+export { failure, success, Either, Failure, Success };

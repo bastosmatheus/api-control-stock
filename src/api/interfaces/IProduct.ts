@@ -4,6 +4,7 @@ enum EProductResponse {
   ProductNotFound,
   ProductExists,
   StoreNotFound,
+  NotAuthorized,
 }
 
 interface IProduct {
@@ -12,14 +13,29 @@ interface IProduct {
   create(
     name_product: string,
     price_product: number,
-    id_store: number
-  ): Promise<Product | EProductResponse.ProductExists | EProductResponse.StoreNotFound>;
+    id_store: number,
+    id_store_token: number
+  ): Promise<
+    | Product
+    | EProductResponse.ProductExists
+    | EProductResponse.StoreNotFound
+    | EProductResponse.NotAuthorized
+  >;
   update(
     id: number,
     name_product: string,
-    price_product: number
-  ): Promise<Product | EProductResponse.ProductExists | EProductResponse.ProductNotFound>;
-  delete(id: number): Promise<Product | EProductResponse.ProductNotFound>;
+    price_product: number,
+    id_store_token: number
+  ): Promise<
+    | Product
+    | EProductResponse.ProductExists
+    | EProductResponse.ProductNotFound
+    | EProductResponse.NotAuthorized
+  >;
+  delete(
+    id: number,
+    id_store_token: number
+  ): Promise<Product | EProductResponse.ProductNotFound | EProductResponse.NotAuthorized>;
 }
 
 export { IProduct, EProductResponse };

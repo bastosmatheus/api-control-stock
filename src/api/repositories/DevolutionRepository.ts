@@ -30,8 +30,11 @@ class DevolutionRepository implements IDevolution {
   public async create(
     description: string,
     quantity_products: number,
-    id_entrance: number
-  ): Promise<EDevolutionResponse.EntranceNotFound | Devolution> {
+    id_entrance: number,
+    id_store_token: number
+  ): Promise<
+    EDevolutionResponse.EntranceNotFound | EDevolutionResponse.NotAuthorized | Devolution
+  > {
     const entrance = await prismaClient.entrance.findUnique({
       where: {
         id: id_entrance,
@@ -40,6 +43,16 @@ class DevolutionRepository implements IDevolution {
 
     if (entrance === null) {
       return EDevolutionResponse.EntranceNotFound;
+    }
+
+    const product = await prismaClient.product.findUnique({
+      where: {
+        id: entrance.id_product,
+      },
+    });
+
+    if (product?.id_store !== id_store_token) {
+      return EDevolutionResponse.NotAuthorized;
     }
 
     const devolution = await prismaClient.devolution.create({
@@ -57,9 +70,13 @@ class DevolutionRepository implements IDevolution {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number
+    id_entrance: number,
+    id_store_token: number
   ): Promise<
-    EDevolutionResponse.DevolutionNotFound | EDevolutionResponse.EntranceNotFound | Devolution
+    | EDevolutionResponse.DevolutionNotFound
+    | EDevolutionResponse.NotAuthorized
+    | EDevolutionResponse.EntranceNotFound
+    | Devolution
   > {
     const entrance = await prismaClient.entrance.findUnique({
       where: {
@@ -76,6 +93,16 @@ class DevolutionRepository implements IDevolution {
         id,
       },
     });
+
+    const product = await prismaClient.product.findUnique({
+      where: {
+        id: entrance.id_product,
+      },
+    });
+
+    if (product?.id_store !== id_store_token) {
+      return EDevolutionResponse.NotAuthorized;
+    }
 
     if (devolution === null) {
       return EDevolutionResponse.DevolutionNotFound;
@@ -95,7 +122,12 @@ class DevolutionRepository implements IDevolution {
     return devolutionUpdated;
   }
 
-  public async delete(id: number): Promise<EDevolutionResponse.DevolutionNotFound | Devolution> {
+  public async delete(
+    id: number,
+    id_store_token: number
+  ): Promise<
+    EDevolutionResponse.DevolutionNotFound | EDevolutionResponse.NotAuthorized | Devolution
+  > {
     const devolution = await prismaClient.devolution.findUnique({
       where: {
         id,
@@ -104,6 +136,22 @@ class DevolutionRepository implements IDevolution {
 
     if (devolution === null) {
       return EDevolutionResponse.DevolutionNotFound;
+    }
+
+    const entrance = await prismaClient.entrance.findUnique({
+      where: {
+        id: devolution.id_entrance,
+      },
+    });
+
+    const product = await prismaClient.product.findUnique({
+      where: {
+        id: entrance?.id_product,
+      },
+    });
+
+    if (product?.id_store !== id_store_token) {
+      return EDevolutionResponse.NotAuthorized;
     }
 
     const devolutionDeleted = await prismaClient.devolution.delete({

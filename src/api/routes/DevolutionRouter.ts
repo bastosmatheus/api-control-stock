@@ -1,15 +1,32 @@
 import { Router } from "express";
-import DevolutionController from "../controllers/DevolutionController";
+import { AuthToken } from "../middlewares/AuthToken";
+import { CreateDevolutionController } from "../controllers/devolution/create-devolution-controller";
+import { UpdateDevolutionController } from "../controllers/devolution/update-devolution-controller";
+import { DeleteDevolutionController } from "../controllers/devolution/delete-devolution-controller";
+import { GetAllDevolutionsController } from "../controllers/devolution/get-all-devolutions-controller";
+import { GetDevolutionByIdController } from "../controllers/devolution/get-devolution-by-id-controller";
 
 class DevolutionRouter {
   public readonly router = Router();
 
   public routes() {
-    this.router.get("/devolutions", DevolutionController.getAllDevolutions);
-    this.router.get("/devolutions/:id", DevolutionController.getDevolutionById);
-    this.router.post("/devolutions", DevolutionController.createDevolution);
-    this.router.put("/devolutions/:id", DevolutionController.updateDevolution);
-    this.router.delete("/devolutions/:id", DevolutionController.deleteDevolution);
+    this.router.get("/devolutions", new GetAllDevolutionsController().execute);
+    this.router.get("/devolutions/:id", new GetDevolutionByIdController().execute);
+    this.router.post(
+      "/devolutions",
+      new AuthToken().verifyToken,
+      new CreateDevolutionController().execute
+    );
+    this.router.put(
+      "/devolutions/:id",
+      new AuthToken().verifyToken,
+      new UpdateDevolutionController().execute
+    );
+    this.router.delete(
+      "/devolutions/:id",
+      new AuthToken().verifyToken,
+      new DeleteDevolutionController().execute
+    );
 
     return this.router;
   }

@@ -31,8 +31,11 @@ class ExitRepository implements IExit {
     description: string,
     quantity_products: number,
     price_total: number,
-    id_product: number
-  ): Promise<EExitResponse.ProductNotFound | EExitResponse.NoStock | Exit> {
+    id_product: number,
+    id_store_token: number
+  ): Promise<
+    EExitResponse.ProductNotFound | EExitResponse.NoStock | EExitResponse.NotAuthorized | Exit
+  > {
     const product = await prismaClient.product.findUnique({
       where: {
         id: id_product,
@@ -41,6 +44,10 @@ class ExitRepository implements IExit {
 
     if (product === null) {
       return EExitResponse.ProductNotFound;
+    }
+
+    if (product.id_store !== id_store_token) {
+      return EExitResponse.NotAuthorized;
     }
 
     if (product.quantity_product_stock - quantity_products < 0) {
@@ -64,9 +71,14 @@ class ExitRepository implements IExit {
     description: string,
     quantity_products: number,
     price_total: number,
-    id_product: number
+    id_product: number,
+    id_store_token: number
   ): Promise<
-    EExitResponse.ExitNotFound | EExitResponse.ProductNotFound | EExitResponse.NoStock | Exit
+    | EExitResponse.ExitNotFound
+    | EExitResponse.ProductNotFound
+    | EExitResponse.NoStock
+    | EExitResponse.NotAuthorized
+    | Exit
   > {
     const exit = await prismaClient.exit.findUnique({
       where: {
@@ -88,6 +100,10 @@ class ExitRepository implements IExit {
       return EExitResponse.ProductNotFound;
     }
 
+    if (product.id_store !== id_store_token) {
+      return EExitResponse.NotAuthorized;
+    }
+
     if (product.quantity_product_stock - quantity_products < 0) {
       return EExitResponse.NoStock;
     }
@@ -107,7 +123,10 @@ class ExitRepository implements IExit {
     return exitUpdated;
   }
 
-  public async delete(id: number): Promise<EExitResponse.ExitNotFound | Exit> {
+  public async delete(
+    id: number,
+    id_store_token: number
+  ): Promise<EExitResponse.ExitNotFound | EExitResponse.NotAuthorized | Exit> {
     const exit = await prismaClient.exit.findUnique({
       where: {
         id,
@@ -116,6 +135,16 @@ class ExitRepository implements IExit {
 
     if (exit === null) {
       return EExitResponse.ExitNotFound;
+    }
+
+    const product = await prismaClient.product.findUnique({
+      where: {
+        id: exit.id_product,
+      },
+    });
+
+    if (product?.id_store !== id_store_token) {
+      return EExitResponse.NotAuthorized;
     }
 
     const exitDeleted = await prismaClient.exit.delete({

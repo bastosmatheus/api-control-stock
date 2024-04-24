@@ -39,8 +39,9 @@ class EntranceRepository implements IEntrance {
     supplier: string,
     quantity_products: number,
     price_total: number,
-    id_product: number
-  ): Promise<EEntranceResponse.ProductNotFound | Entrance> {
+    id_product: number,
+    id_store_token: number
+  ): Promise<EEntranceResponse.ProductNotFound | EEntranceResponse.NotAuthorized | Entrance> {
     const product = await prismaClient.product.findUnique({
       where: {
         id: id_product,
@@ -49,6 +50,10 @@ class EntranceRepository implements IEntrance {
 
     if (product === null) {
       return EEntranceResponse.ProductNotFound;
+    }
+
+    if (product.id_store !== id_store_token) {
+      return EEntranceResponse.NotAuthorized;
     }
 
     const entrance = await prismaClient.entrance.create({
@@ -68,8 +73,14 @@ class EntranceRepository implements IEntrance {
     supplier: string,
     quantity_products: number,
     price_total: number,
-    id_product: number
-  ): Promise<EEntranceResponse.EntranceNotFound | EEntranceResponse.ProductNotFound | Entrance> {
+    id_product: number,
+    id_store_token: number
+  ): Promise<
+    | EEntranceResponse.EntranceNotFound
+    | EEntranceResponse.NotAuthorized
+    | EEntranceResponse.ProductNotFound
+    | Entrance
+  > {
     const entrance = await prismaClient.entrance.findUnique({
       where: {
         id,
@@ -90,6 +101,10 @@ class EntranceRepository implements IEntrance {
       return EEntranceResponse.ProductNotFound;
     }
 
+    if (product.id_store !== id_store_token) {
+      return EEntranceResponse.NotAuthorized;
+    }
+
     const entranceUpdated = await prismaClient.entrance.update({
       data: {
         supplier,
@@ -105,7 +120,10 @@ class EntranceRepository implements IEntrance {
     return entranceUpdated;
   }
 
-  public async delete(id: number): Promise<EEntranceResponse.EntranceNotFound | Entrance> {
+  public async delete(
+    id: number,
+    id_store_token: number
+  ): Promise<EEntranceResponse.EntranceNotFound | EEntranceResponse.NotAuthorized | Entrance> {
     const entrance = await prismaClient.entrance.findUnique({
       where: {
         id,
@@ -114,6 +132,16 @@ class EntranceRepository implements IEntrance {
 
     if (entrance === null) {
       return EEntranceResponse.EntranceNotFound;
+    }
+
+    const product = await prismaClient.product.findUnique({
+      where: {
+        id: entrance.id_product,
+      },
+    });
+
+    if (product?.id_store !== id_store_token) {
+      return EEntranceResponse.NotAuthorized;
     }
 
     const entranceDeleted = await prismaClient.entrance.delete({

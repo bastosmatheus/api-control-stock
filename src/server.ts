@@ -16,11 +16,11 @@ const urlEncoded = bodyParser.urlencoded({ extended: true });
 app.use(cors());
 app.use(jsonBodyParser);
 app.use(urlEncoded);
-app.use(ProductRouter);
-app.use(EntranceRouter);
-app.use(ExitRouter);
-app.use(DevolutionRouter);
-app.use(DefectiveProductRouter);
+// app.use(ProductRouter);
+// app.use(EntranceRouter);
+// app.use(ExitRouter);
+// app.use(DevolutionRouter);
+// app.use(DefectiveProductRouter);
 app.use(StoreRouter);
 
 app.listen(4000, () => {

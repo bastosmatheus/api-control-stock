@@ -75,57 +75,86 @@ class StoreRepository implements IStore {
   public async update(
     id: number,
     name_store: string,
-    password: string
-  ): Promise<Store | EStoreResponse.StoreNotFound | EStoreResponse.NameStoreExists> {
-    const storeExists = await prismaClient.store.findUnique({
+    id_store_token: number
+  ): Promise<
+    | Store
+    | EStoreResponse.StoreNotFound
+    | EStoreResponse.NameStoreExists
+    | EStoreResponse.NotAuthorized
+  > {
+    if (id !== id_store_token) {
+      return EStoreResponse.NotAuthorized;
+    }
+
+    const store = await prismaClient.store.findUnique({
       where: {
         id,
       },
     });
 
-    if (!storeExists) {
+    if (store === null) {
       return EStoreResponse.StoreNotFound;
     }
 
-    const nameStoreExists = await prismaClient.store.findUnique({
+    const nameStore = await prismaClient.store.findUnique({
       where: {
         name_store,
       },
     });
 
-    if (nameStoreExists && nameStoreExists.id !== id) {
+    if (nameStore && nameStore.id !== id) {
       return EStoreResponse.NameStoreExists;
     }
 
-    const store = await prismaClient.store.update({
+    const storeUpdated = await prismaClient.store.update({
       where: {
         id,
       },
       data: {
         name_store,
-        password,
       },
     });
 
-    return store;
+    return storeUpdated;
   }
 
-  public async delete(id: number): Promise<Store | EStoreResponse.StoreNotFound> {
-    const storeExists = await prismaClient.store.findUnique({
+  public async delete(
+    id: number,
+    id_store_token: number
+  ): Promise<Store | EStoreResponse.StoreNotFound | EStoreResponse.NotAuthorized> {
+    if (id !== id_store_token) {
+      return EStoreResponse.NotAuthorized;
+    }
+
+    const store = await prismaClient.store.findUnique({
       where: {
         id,
       },
     });
 
-    if (!storeExists) {
+    if (store === null) {
       return EStoreResponse.StoreNotFound;
     }
 
-    const store = await prismaClient.store.delete({
+    const storeDeleted = await prismaClient.store.delete({
       where: {
         id,
       },
     });
+
+    return storeDeleted;
+  }
+
+  public async login(email: string): Promise<Store | EStoreResponse.StoreNotFound> {
+    const store = await prismaClient.store.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (store === null) {
+      return EStoreResponse.StoreNotFound;
+    }
 
     return store;
   }
