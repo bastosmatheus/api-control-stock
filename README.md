@@ -8,6 +8,8 @@ Todos os dados são validados com a biblioteca Zod, as senhas registradas são c
 
 Nesse projeto foi implementado o padrão Either (estrutura de dados que representa dois tipos diferentes, Success e Failure), facilitando a manipulação e tratativa dos erros da aplicação.
 
+Para finalizar, são feito alguns testes unitários com o Vitest.
+
 <h2>Tópicos 📍</h2>
 
 - <a href="#melhorias">Ajustes e melhorias</a>
@@ -31,6 +33,7 @@ Nesse projeto foi implementado o padrão Either (estrutura de dados que represen
 - [Zod](https://zod.dev/)
 - [JWT](https://jwt.io/)
 - [BCrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
+- [Vitest](https://vitest.dev/)
 
 <h2 id="project">Como rodar esse projeto? 💿</h2>
 
