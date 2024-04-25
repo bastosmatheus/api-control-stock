@@ -24,14 +24,9 @@ interface IExit {
     description: string,
     quantity_products: number,
     price_total: number,
-    id_product: number,
     id_store_token: number
   ): Promise<
-    | EExitResponse.ExitNotFound
-    | EExitResponse.ProductNotFound
-    | EExitResponse.NoStock
-    | EExitResponse.NotAuthorized
-    | Exit
+    EExitResponse.ExitNotFound | EExitResponse.NoStock | EExitResponse.NotAuthorized | Exit
   >;
   delete(
     id: number,

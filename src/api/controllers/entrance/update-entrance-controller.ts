@@ -5,7 +5,7 @@ import { UpdateEntranceService } from "../../services/entrance/update-entrance-s
 
 class UpdateEntranceController {
   public async execute(req: Request, res: Response) {
-    const { supplier, quantity_products, price_total, id_product } = req.body;
+    const { supplier, quantity_products, price_total } = req.body;
     const { id } = req.params;
     const infosToken = req.infosToken as InfosToken;
 
@@ -18,7 +18,6 @@ class UpdateEntranceController {
       supplier,
       quantity_products,
       price_total,
-      id_product,
       infosToken
     );
 

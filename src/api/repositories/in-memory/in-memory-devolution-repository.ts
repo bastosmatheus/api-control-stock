@@ -74,13 +74,9 @@ class InMemoryDevolutionRepository implements IDevolution {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number,
     id_store_token: number
   ): Promise<
-    | Devolution
-    | EDevolutionResponse.NotAuthorized
-    | EDevolutionResponse.DevolutionNotFound
-    | EDevolutionResponse.EntranceNotFound
+    Devolution | EDevolutionResponse.NotAuthorized | EDevolutionResponse.DevolutionNotFound
   > {
     const devolution = this.devolutions.find((devolution) => devolution.id === id);
 
@@ -88,13 +84,11 @@ class InMemoryDevolutionRepository implements IDevolution {
       return EDevolutionResponse.DevolutionNotFound;
     }
 
-    const entranceExists = this.entrances.find((entrance) => entrance.id === id_entrance);
+    const entranceExists = this.entrances.find(
+      (entrance) => entrance.id === devolution.id_entrance
+    );
 
-    if (!entranceExists) {
-      return EDevolutionResponse.EntranceNotFound;
-    }
-
-    const product = this.products.find((product) => product.id === entranceExists.id_product);
+    const product = this.products.find((product) => product.id === entranceExists?.id_product);
 
     if (product?.id_store !== id_store_token) {
       return EDevolutionResponse.NotAuthorized;
@@ -102,7 +96,6 @@ class InMemoryDevolutionRepository implements IDevolution {
 
     devolution.description = description;
     devolution.quantity_products = quantity_products;
-    devolution.id_entrance = id_entrance;
 
     return devolution;
   }

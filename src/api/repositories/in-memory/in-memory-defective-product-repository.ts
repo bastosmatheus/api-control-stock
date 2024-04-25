@@ -79,13 +79,11 @@ class InMemoryDefectiveProductRepository implements IDefectiveProduct {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number,
     id_store_token: number
   ): Promise<
     | DefectiveProduct
     | EDefectiveProductResponse.DefectiveProductNotFound
     | EDefectiveProductResponse.NotAuthorized
-    | EDefectiveProductResponse.EntranceNotFound
   > {
     const defectiveProduct = this.defectiveProducts.find(
       (defectiveProduct) => defectiveProduct.id === id
@@ -95,13 +93,11 @@ class InMemoryDefectiveProductRepository implements IDefectiveProduct {
       return EDefectiveProductResponse.DefectiveProductNotFound;
     }
 
-    const entranceExists = this.entrances.find((entrance) => entrance.id === id_entrance);
+    const entranceExists = this.entrances.find(
+      (entrance) => entrance.id === defectiveProduct.id_entrance
+    );
 
-    if (!entranceExists) {
-      return EDefectiveProductResponse.EntranceNotFound;
-    }
-
-    const product = this.products.find((product) => product.id === entranceExists.id_product);
+    const product = this.products.find((product) => product.id === entranceExists?.id_product);
 
     if (product?.id_store !== id_store_token) {
       return EDefectiveProductResponse.NotAuthorized;
@@ -109,7 +105,6 @@ class InMemoryDefectiveProductRepository implements IDefectiveProduct {
 
     defectiveProduct.description = description;
     defectiveProduct.quantity_products = quantity_products;
-    defectiveProduct.id_entrance = id_entrance;
 
     return defectiveProduct;
   }

@@ -21,7 +21,7 @@ describe("update exit", () => {
       name_store: "mtCompany",
     });
 
-    const exit = await updateExitService.execute(1, "Animal comprou o produto", 2, 240, 1, {
+    const exit = await updateExitService.execute(1, "Animal comprou o produto", 2, 240, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -43,7 +43,7 @@ describe("update exit", () => {
       name_store: "mtCompany",
     });
 
-    const exit = await updateExitService.execute(1, "Animal comprou o produto", 2, 240, 1, {
+    const exit = await updateExitService.execute(1, "Animal comprou o produto", 2, 240, {
       id: 10,
       name_store: "mtCompany",
     });
@@ -59,7 +59,7 @@ describe("update exit", () => {
       name_store: "mtCompany",
     });
 
-    const exit = await updateExitService.execute(1, "Animal comprou o produto", 2000, 240, 1, {
+    const exit = await updateExitService.execute(1, "Animal comprou o produto", 2000, 240, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -77,7 +77,7 @@ describe("update exit", () => {
       name_store: "mtCompany",
     });
 
-    const exit = await updateExitService.execute(1, 205030, 1, 240, 1, {
+    const exit = await updateExitService.execute(1, 205030, 1, 240, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -93,7 +93,7 @@ describe("update exit", () => {
       name_store: "mtCompany",
     });
 
-    const exit = await updateExitService.execute(1, "Animal comprou o produto", "2000", 240, 1, {
+    const exit = await updateExitService.execute(1, "Animal comprou o produto", "2000", 240, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -109,7 +109,7 @@ describe("update exit", () => {
       name_store: "mtCompany",
     });
 
-    const exit = await updateExitService.execute(1, "Animal comprou o produto", 1, "240", 1, {
+    const exit = await updateExitService.execute(1, "Animal comprou o produto", 1, "240", {
       id: 1,
       name_store: "mtCompany",
     });
@@ -117,41 +117,5 @@ describe("update exit", () => {
     expect(exit).toBeInstanceOf(Failure);
     expect(exit.value).toHaveProperty("message");
     expect(exit.value.message).toBe("O preço total deve ser um número");
-  });
-
-  it("should not be able to update an exit if the field product id is a different type of number", async () => {
-    await createExitService.execute("Pessoa comprou o produto", 1, 120, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const exit = await updateExitService.execute(
-      1,
-      "Animal comprou o produto",
-      1,
-      240,
-      new Date(),
-      {
-        id: 1,
-        name_store: "mtCompany",
-      }
-    );
-
-    expect(exit).toBeInstanceOf(Failure);
-    expect(exit.value).toHaveProperty("message");
-    expect(exit.value.message).toBe("O ID do produto deve ser um número");
-  });
-
-  it("should not be able to update an exit if the field product id is empty", async () => {
-    await createExitService.execute("Pessoa comprou o produto", 1, 120, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const exit = await updateExitService.execute(1, "Animal comprou o produto", 1, 240);
-
-    expect(exit).toBeInstanceOf(Failure);
-    expect(exit.value).toHaveProperty("message");
-    expect(exit.value.message).toBe("O ID do produto é obrigatório");
   });
 });

@@ -17,7 +17,6 @@ class UpdateExitService {
     description: string,
     quantity_products: number,
     price_total: number,
-    id_product: number,
     infosToken: InfosToken
   ): Promise<Either<BadRequestError | UnauthorizedError | NotFoundError | ConflictError, Exit>> {
     const exitSchema = z.object({
@@ -43,12 +42,6 @@ class UpdateExitService {
         required_error: "Informe o preço total da saída",
         invalid_type_error: "O preço total deve ser um número",
       }),
-      id_product: z
-        .number({
-          required_error: "O ID do produto é obrigatório",
-          invalid_type_error: "O ID do produto deve ser um número",
-        })
-        .min(1, { message: "O ID do produto não pode ser menor que 1" }),
     });
 
     const exitValidation = exitSchema.safeParse({
@@ -56,7 +49,6 @@ class UpdateExitService {
       description,
       quantity_products,
       price_total,
-      id_product,
     });
 
     if (!exitValidation.success) {
@@ -70,7 +62,6 @@ class UpdateExitService {
       description,
       quantity_products,
       price_total,
-      id_product,
       infosToken.id
     );
 
@@ -82,10 +73,6 @@ class UpdateExitService {
 
     if (exit === EExitResponse.ExitNotFound) {
       return failure(new NotFoundError("Nenhuma saída foi encontrada com o ID: " + id));
-    }
-
-    if (exit === EExitResponse.ProductNotFound) {
-      return failure(new NotFoundError("Nenhum produto foi encontrado com o ID: " + id_product));
     }
 
     if (exit === EExitResponse.NoStock) {

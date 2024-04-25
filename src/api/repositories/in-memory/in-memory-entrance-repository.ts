@@ -66,34 +66,23 @@ class InMemoryEntranceRepository implements IEntrance {
     supplier: string,
     quantity_products: number,
     price_total: number,
-    id_product: number,
     id_store_token: number
-  ): Promise<
-    | Entrance
-    | EEntranceResponse.ProductNotFound
-    | EEntranceResponse.NotAuthorized
-    | EEntranceResponse.EntranceNotFound
-  > {
+  ): Promise<Entrance | EEntranceResponse.NotAuthorized | EEntranceResponse.EntranceNotFound> {
     const entrance = this.entrances.find((entrance) => entrance.id === id);
 
     if (!entrance) {
       return EEntranceResponse.EntranceNotFound;
     }
 
-    const productExists = this.products.find((product) => product.id === id_product);
+    const productExists = this.products.find((product) => product.id === entrance.id_product);
 
-    if (!productExists) {
-      return EEntranceResponse.ProductNotFound;
-    }
-
-    if (productExists.id_store !== id_store_token) {
+    if (productExists?.id_store !== id_store_token) {
       return EEntranceResponse.NotAuthorized;
     }
 
     entrance.supplier = supplier;
     entrance.quantity_products = quantity_products;
     entrance.price_total = price_total;
-    entrance.id_product = id_product;
 
     return entrance;
   }

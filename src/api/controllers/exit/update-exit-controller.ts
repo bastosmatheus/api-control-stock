@@ -5,7 +5,7 @@ import { UpdateExitService } from "../../services/exit/update-exit-service";
 
 class UpdateExitController {
   public async execute(req: Request, res: Response) {
-    const { description, quantity_products, price_total, id_product } = req.body;
+    const { description, quantity_products, price_total } = req.body;
     const { id } = req.params;
     const infosToken = req.infosToken as InfosToken;
 
@@ -18,7 +18,6 @@ class UpdateExitController {
       description,
       quantity_products,
       price_total,
-      id_product,
       infosToken
     );
 

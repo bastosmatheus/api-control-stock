@@ -21,14 +21,8 @@ interface IEntrance {
     supplier: string,
     quantity_products: number,
     price_total: number,
-    id_product: number,
     id_store_token: number
-  ): Promise<
-    | EEntranceResponse.EntranceNotFound
-    | EEntranceResponse.NotAuthorized
-    | EEntranceResponse.ProductNotFound
-    | Entrance
-  >;
+  ): Promise<EEntranceResponse.EntranceNotFound | EEntranceResponse.NotAuthorized | Entrance>;
   delete(
     id: number,
     id_store_token: number

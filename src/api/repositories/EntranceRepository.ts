@@ -73,14 +73,8 @@ class EntranceRepository implements IEntrance {
     supplier: string,
     quantity_products: number,
     price_total: number,
-    id_product: number,
     id_store_token: number
-  ): Promise<
-    | EEntranceResponse.EntranceNotFound
-    | EEntranceResponse.NotAuthorized
-    | EEntranceResponse.ProductNotFound
-    | Entrance
-  > {
+  ): Promise<EEntranceResponse.EntranceNotFound | EEntranceResponse.NotAuthorized | Entrance> {
     const entrance = await prismaClient.entrance.findUnique({
       where: {
         id,
@@ -93,15 +87,11 @@ class EntranceRepository implements IEntrance {
 
     const product = await prismaClient.product.findUnique({
       where: {
-        id: id_product,
+        id: entrance.id_product,
       },
     });
 
-    if (product === null) {
-      return EEntranceResponse.ProductNotFound;
-    }
-
-    if (product.id_store !== id_store_token) {
+    if (product?.id_store !== id_store_token) {
       return EEntranceResponse.NotAuthorized;
     }
 
@@ -110,7 +100,6 @@ class EntranceRepository implements IEntrance {
         supplier,
         quantity_products,
         price_total,
-        id_product,
       },
       where: {
         id,

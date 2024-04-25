@@ -25,11 +25,9 @@ interface IDefectiveProduct {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number,
     id_store_token: number
   ): Promise<
     | EDefectiveProductResponse.DefectiveProductNotFound
-    | EDefectiveProductResponse.EntranceNotFound
     | EDefectiveProductResponse.NotAuthorized
     | DefectiveProduct
   >;

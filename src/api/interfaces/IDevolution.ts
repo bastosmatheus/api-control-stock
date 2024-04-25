@@ -19,13 +19,9 @@ interface IDevolution {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number,
     id_store_token: number
   ): Promise<
-    | EDevolutionResponse.DevolutionNotFound
-    | EDevolutionResponse.NotAuthorized
-    | EDevolutionResponse.EntranceNotFound
-    | Devolution
+    EDevolutionResponse.DevolutionNotFound | EDevolutionResponse.NotAuthorized | Devolution
   >;
   delete(
     id: number,

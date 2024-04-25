@@ -70,33 +70,29 @@ class DevolutionRepository implements IDevolution {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number,
     id_store_token: number
   ): Promise<
-    | EDevolutionResponse.DevolutionNotFound
-    | EDevolutionResponse.NotAuthorized
-    | EDevolutionResponse.EntranceNotFound
-    | Devolution
+    EDevolutionResponse.DevolutionNotFound | EDevolutionResponse.NotAuthorized | Devolution
   > {
-    const entrance = await prismaClient.entrance.findUnique({
-      where: {
-        id: id_entrance,
-      },
-    });
-
-    if (entrance === null) {
-      return EDevolutionResponse.EntranceNotFound;
-    }
-
     const devolution = await prismaClient.devolution.findUnique({
       where: {
         id,
       },
     });
 
+    if (devolution === null) {
+      return EDevolutionResponse.DevolutionNotFound;
+    }
+
+    const entrance = await prismaClient.entrance.findUnique({
+      where: {
+        id: devolution.id_entrance,
+      },
+    });
+
     const product = await prismaClient.product.findUnique({
       where: {
-        id: entrance.id_product,
+        id: entrance?.id_product,
       },
     });
 
@@ -104,15 +100,10 @@ class DevolutionRepository implements IDevolution {
       return EDevolutionResponse.NotAuthorized;
     }
 
-    if (devolution === null) {
-      return EDevolutionResponse.DevolutionNotFound;
-    }
-
     const devolutionUpdated = await prismaClient.devolution.update({
       data: {
         description,
         quantity_products,
-        id_entrance,
       },
       where: {
         id,

@@ -25,7 +25,6 @@ describe("update a defective product", () => {
       1,
       "Produto está com defeito na parte de trás da camiseta",
       1,
-      1,
       {
         id: 1,
         name_store: "mtCompany",
@@ -50,7 +49,6 @@ describe("update a defective product", () => {
     const defectiveProduct = await updateDefectiveProductService.execute(
       1,
       "Produto está com defeito na parte de trás da camiseta",
-      1,
       1,
       {
         id: 10,
@@ -91,54 +89,6 @@ describe("update a defective product", () => {
     expect(defectiveProduct.value.message).toBe("O ID deve ser um número");
   });
 
-  it("should not be able to update a defective product if the id field is empty", async () => {
-    await createDefectiveProductService.execute("Produto veio quebrado", 1, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const defectiveProduct = await updateDefectiveProductService.execute();
-
-    expect(defectiveProduct).toBeInstanceOf(Failure);
-    expect(defectiveProduct.value).toHaveProperty("message");
-    expect(defectiveProduct.value.message).toBe("O ID é obrigatório");
-  });
-
-  it("should not be able to update a defective product if the id field is a different type of number", async () => {
-    await createDefectiveProductService.execute("Produto veio quebrado", 1, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const defectiveProduct = await updateDefectiveProductService.execute("1");
-
-    expect(defectiveProduct).toBeInstanceOf(Failure);
-    expect(defectiveProduct.value).toHaveProperty("message");
-    expect(defectiveProduct.value.message).toBe("O ID deve ser um número");
-  });
-
-  it("should not be able to update a defective product if the entrance id field is a different type of number", async () => {
-    await createDefectiveProductService.execute("Produto veio quebrado", 1, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const defectiveProduct = await updateDefectiveProductService.execute(
-      10,
-      "Produto está com defeito na parte de trás da camiseta",
-      1,
-      "10",
-      {
-        id: 1,
-        name_store: "mtCompany",
-      }
-    );
-
-    expect(defectiveProduct).toBeInstanceOf(Failure);
-    expect(defectiveProduct.value).toHaveProperty("message");
-    expect(defectiveProduct.value.message).toBe("O ID da entrada deve ser um número");
-  });
-
   it("should not be able to update a defective product if the entrance quantity of products field is a different type of number", async () => {
     await createDefectiveProductService.execute("Produto veio quebrado", 1, 1, {
       id: 1,
@@ -149,7 +99,6 @@ describe("update a defective product", () => {
       10,
       "Produto está com defeito na parte de trás da camiseta",
       "255",
-      1,
       {
         id: 1,
         name_store: "mtCompany",
@@ -169,7 +118,7 @@ describe("update a defective product", () => {
       name_store: "mtCompany",
     });
 
-    const defectiveProduct = await updateDefectiveProductService.execute(1, 203050, 1, 1, {
+    const defectiveProduct = await updateDefectiveProductService.execute(1, 203050, 1, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -203,7 +152,6 @@ describe("update a defective product", () => {
     const defectiveProduct = await updateDefectiveProductService.execute(
       10,
       "Produto está com defeito na parte de trás da camiseta",
-      1,
       1,
       {
         id: 1,

@@ -5,7 +5,7 @@ import { UpdateDefectiveProductService } from "../../services/defective-product/
 
 class UpdateDefectiveProductController {
   public async execute(req: Request, res: Response) {
-    const { description, quantity_products, id_entrance } = req.body;
+    const { description, quantity_products } = req.body;
     const { id } = req.params;
     const infosToken = req.infosToken as InfosToken;
 
@@ -19,7 +19,6 @@ class UpdateDefectiveProductController {
       Number(id),
       description,
       quantity_products,
-      id_entrance,
       infosToken
     );
 

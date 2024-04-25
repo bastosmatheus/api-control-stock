@@ -71,14 +71,9 @@ class ExitRepository implements IExit {
     description: string,
     quantity_products: number,
     price_total: number,
-    id_product: number,
     id_store_token: number
   ): Promise<
-    | EExitResponse.ExitNotFound
-    | EExitResponse.ProductNotFound
-    | EExitResponse.NoStock
-    | EExitResponse.NotAuthorized
-    | Exit
+    EExitResponse.ExitNotFound | EExitResponse.NoStock | EExitResponse.NotAuthorized | Exit
   > {
     const exit = await prismaClient.exit.findUnique({
       where: {
@@ -92,15 +87,11 @@ class ExitRepository implements IExit {
 
     const product = await prismaClient.product.findUnique({
       where: {
-        id: id_product,
+        id: exit.id_product,
       },
     });
 
-    if (product === null) {
-      return EExitResponse.ProductNotFound;
-    }
-
-    if (product.id_store !== id_store_token) {
+    if (product?.id_store !== id_store_token) {
       return EExitResponse.NotAuthorized;
     }
 
@@ -113,7 +104,6 @@ class ExitRepository implements IExit {
         description,
         quantity_products,
         price_total,
-        id_product,
       },
       where: {
         id,

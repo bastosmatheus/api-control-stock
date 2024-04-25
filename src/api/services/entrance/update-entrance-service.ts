@@ -16,7 +16,6 @@ class UpdateEntranceService {
     supplier: string,
     quantity_products: number,
     price_total: number,
-    id_product: number,
     infosToken: InfosToken
   ): Promise<Either<BadRequestError | UnauthorizedError | NotFoundError, Entrance>> {
     const entranceSchema = z.object({
@@ -44,12 +43,6 @@ class UpdateEntranceService {
           invalid_type_error: "O preço total deve ser um número",
         })
         .min(0.05, { message: "O preço total da entrada deve ser maior que 0.05" }),
-      id_product: z
-        .number({
-          required_error: "O ID do produto é obrigatório",
-          invalid_type_error: "O ID do produto deve ser um número",
-        })
-        .min(1, { message: "O ID do produto não pode ser menor que 1" }),
     });
 
     const entranceValidation = entranceSchema.safeParse({
@@ -57,7 +50,6 @@ class UpdateEntranceService {
       supplier,
       quantity_products,
       price_total,
-      id_product,
     });
 
     if (!entranceValidation.success) {
@@ -71,7 +63,6 @@ class UpdateEntranceService {
       supplier,
       quantity_products,
       price_total,
-      id_product,
       infosToken.id
     );
 
@@ -83,10 +74,6 @@ class UpdateEntranceService {
 
     if (entrance === EEntranceResponse.EntranceNotFound) {
       return failure(new NotFoundError("Nenhuma entrada foi encontrada com o ID: " + id));
-    }
-
-    if (entrance === EEntranceResponse.ProductNotFound) {
-      return failure(new NotFoundError("Nenhum produto foi encontrado com o ID: " + id_product));
     }
 
     return success(entrance);

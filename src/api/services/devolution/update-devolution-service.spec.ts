@@ -25,7 +25,6 @@ describe("update a devolution", () => {
       1,
       "Produto está com defeito na parte de trás da camiseta",
       1,
-      1,
       {
         id: 1,
         name_store: "mtCompany",
@@ -68,28 +67,6 @@ describe("update a devolution", () => {
     expect(devolution.value.message).toBe("O ID deve ser um número");
   });
 
-  it("should not be able to update a devolution if the entrance id field is a different type of number", async () => {
-    await createDevolutionService.execute("Produto veio quebrado", 1, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const devolution = await updateDevolutionService.execute(
-      10,
-      "Produto está com defeito na parte de trás da camiseta",
-      1,
-      "10",
-      {
-        id: 1,
-        name_store: "mtCompany",
-      }
-    );
-
-    expect(devolution).toBeInstanceOf(Failure);
-    expect(devolution.value).toHaveProperty("message");
-    expect(devolution.value.message).toBe("O ID da entrada deve ser um número");
-  });
-
   it("should not be able to update a devolution if the entrance quantity of products field is a different type of number", async () => {
     await createDevolutionService.execute("Produto veio quebrado", 1, 1, {
       id: 1,
@@ -100,7 +77,6 @@ describe("update a devolution", () => {
       10,
       "Produto está com defeito na parte de trás da camiseta",
       "255",
-      1,
       {
         id: 1,
         name_store: "mtCompany",
@@ -118,7 +94,7 @@ describe("update a devolution", () => {
       name_store: "mtCompany",
     });
 
-    const devolution = await updateDevolutionService.execute(1, 203050, 1, 1, {
+    const devolution = await updateDevolutionService.execute(1, 203050, 1, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -150,7 +126,6 @@ describe("update a devolution", () => {
     const devolution = await updateDevolutionService.execute(
       10,
       "Produto está com defeito na parte de trás da camiseta",
-      1,
       1,
       {
         id: 1,

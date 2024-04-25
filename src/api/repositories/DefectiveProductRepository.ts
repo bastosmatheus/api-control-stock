@@ -74,34 +74,12 @@ class DefectiveProductRepository implements IDefectiveProduct {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number,
     id_store_token: number
   ): Promise<
     | EDefectiveProductResponse.DefectiveProductNotFound
-    | EDefectiveProductResponse.EntranceNotFound
     | EDefectiveProductResponse.NotAuthorized
     | DefectiveProduct
   > {
-    const entrance = await prismaClient.entrance.findUnique({
-      where: {
-        id: id_entrance,
-      },
-    });
-
-    if (entrance === null) {
-      return EDefectiveProductResponse.EntranceNotFound;
-    }
-
-    const product = await prismaClient.product.findUnique({
-      where: {
-        id: entrance.id_product,
-      },
-    });
-
-    if (product?.id_store !== id_store_token) {
-      return EDefectiveProductResponse.NotAuthorized;
-    }
-
     const defectiveProduct = await prismaClient.defectiveProduct.findUnique({
       where: {
         id,
@@ -112,11 +90,26 @@ class DefectiveProductRepository implements IDefectiveProduct {
       return EDefectiveProductResponse.DefectiveProductNotFound;
     }
 
+    const entrance = await prismaClient.entrance.findUnique({
+      where: {
+        id: defectiveProduct.id_entrance,
+      },
+    });
+
+    const product = await prismaClient.product.findUnique({
+      where: {
+        id: entrance?.id_product,
+      },
+    });
+
+    if (product?.id_store !== id_store_token) {
+      return EDefectiveProductResponse.NotAuthorized;
+    }
+
     const defectiveProductUpdated = await prismaClient.defectiveProduct.update({
       data: {
         description,
         quantity_products,
-        id_entrance,
       },
       where: {
         id,

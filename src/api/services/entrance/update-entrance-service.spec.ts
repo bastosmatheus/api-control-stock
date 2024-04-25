@@ -21,7 +21,7 @@ describe("update a entrance", () => {
       name_store: "mtCompany",
     });
 
-    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", 120, 1100, 1, {
+    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", 120, 1100, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -43,7 +43,7 @@ describe("update a entrance", () => {
       name_store: "mtCompany",
     });
 
-    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", 120, 1100, 1, {
+    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", 120, 1100, {
       id: 19,
       name_store: "mtCompany",
     });
@@ -81,29 +81,13 @@ describe("update a entrance", () => {
     expect(entrance.value.message).toBe("O ID deve ser um número");
   });
 
-  it("should not be able to update a entrance if the product id field is a different type of number", async () => {
-    await createEntranceService.execute("mT fornecedor", 100, 1050, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", 100, 1000, "10", {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    expect(entrance).toBeInstanceOf(Failure);
-    expect(entrance.value).toHaveProperty("message");
-    expect(entrance.value.message).toBe("O ID do produto deve ser um número");
-  });
-
   it("should not be able to update a entrance if the entrance quantity of products field is a different type of number", async () => {
     await createEntranceService.execute("mT fornecedor", 100, 1050, 1, {
       id: 1,
       name_store: "mtCompany",
     });
 
-    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", "100", 1000, 1, {
+    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", "100", 1000, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -119,7 +103,7 @@ describe("update a entrance", () => {
       name_store: "mtCompany",
     });
 
-    const entrance = await updateEntranceService.execute(1, 203050, 1, 1, 1, {
+    const entrance = await updateEntranceService.execute(1, 203050, 1, 1, {
       id: 1,
       name_store: "mtCompany",
     });
@@ -140,21 +124,5 @@ describe("update a entrance", () => {
     expect(entrance).toBeInstanceOf(Failure);
     expect(entrance.value).toHaveProperty("message");
     expect(entrance.value.message).toBe("O ID não pode ser menor que 1");
-  });
-
-  it("should not be able to update a entrance if the product is not found", async () => {
-    await createEntranceService.execute("mT fornecedor", 100, 1050, 1, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    const entrance = await updateEntranceService.execute(1, "romarinho LTDA.", 100, 1000, 120, {
-      id: 1,
-      name_store: "mtCompany",
-    });
-
-    expect(entrance).toBeInstanceOf(Failure);
-    expect(entrance.value).toHaveProperty("message");
-    expect(entrance.value.message).toBe("Nenhum produto foi encontrado com o ID: 120");
   });
 });

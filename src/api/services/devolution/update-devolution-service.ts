@@ -15,7 +15,6 @@ class UpdateDevolutionService {
     id: number,
     description: string,
     quantity_products: number,
-    id_entrance: number,
     infosToken: InfosToken
   ): Promise<Either<BadRequestError | UnauthorizedError | NotFoundError, Devolution>> {
     const devolutionSchema = z.object({
@@ -37,19 +36,12 @@ class UpdateDevolutionService {
           invalid_type_error: "A quantidade de devoluções deve ser um número",
         })
         .min(1, { message: "A quantidade de produtos não pode ser menor que 1" }),
-      id_entrance: z
-        .number({
-          required_error: "O ID da entrada é obrigatório",
-          invalid_type_error: "O ID da entrada deve ser um número",
-        })
-        .min(1, { message: "O ID da entrada não pode ser menor que 1" }),
     });
 
     const devolutionValidation = devolutionSchema.safeParse({
       id,
       description,
       quantity_products,
-      id_entrance,
     });
 
     if (!devolutionValidation.success) {
@@ -62,7 +54,6 @@ class UpdateDevolutionService {
       id,
       description,
       quantity_products,
-      id_entrance,
       infosToken.id
     );
 
@@ -72,10 +63,6 @@ class UpdateDevolutionService {
           "Você não tem permissão para atualizar um relatório de devolução dessa loja"
         )
       );
-    }
-
-    if (devolution === EDevolutionResponse.EntranceNotFound) {
-      return failure(new NotFoundError("Nenhuma entrada foi encontrada com o ID: " + id_entrance));
     }
 
     if (devolution === EDevolutionResponse.DevolutionNotFound) {
