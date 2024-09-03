@@ -13,7 +13,7 @@ class StoreRouter {
   public routes() {
     this.router.get("/stores", new GetAllStoresController().execute);
     this.router.get("/stores/:id", new GetStoreByIdController().execute);
-    this.router.post("/stores", new AuthToken().verifyToken, new CreateStoreController().execute);
+    this.router.post("/stores", new CreateStoreController().execute);
     this.router.post("/stores/login", new LoginStoreController().execute);
     this.router.put(
       "/stores/:id",
